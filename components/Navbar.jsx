@@ -47,17 +47,19 @@ const ButtonGroup = ({ setActive, router }) => {
       }}
     />
   ) : (
-    <Button btnName="Connect" customStyles="rounded-xl" handleClick={() => {}} />
+    <Button btnName="Connect" customStyles="rounded-xl" handleClick={() => { }} />
   );
 };
 
 const Navbar = () => {
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
   const [active, setActive] = useState('Explore NFTs');
-  const router = useRouter();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <nav className="flexBetween w-full fixed z-10 p-4 flex-row border-b dark:bg-nft-dark bg-white dark:border-bft-black-1 border-nft-grey-1">
+
       {/* LOGO AND BRANDING */}
       <div className="flex flex-1 flex-row justify-start">
         {/* A] FOR DESKTOP VIEW */}
@@ -78,8 +80,8 @@ const Navbar = () => {
         </Link>
       </div>
 
-      {/* DARK/LIGHT THEME TOGGLE */}
       <div className="flex flex-initial flex-row jusitfy-end">
+        {/* DARK/LIGHT THEME TOGGLE */}
         <div className="flex items-center mr-2">
           <input
             type="checkbox"
@@ -95,7 +97,8 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* MENU ITEMS (LINKS) */}
+      {/* NAVBAR LINKS/ITEMS AND BUTTONS  */}
+      {/* A] FOR DESKTOP VIEW:  */}
       <div className="md:hidden flex">
         <MenuItems active={active} setActive={setActive} />
         <div className="ml-4">
@@ -103,6 +106,42 @@ const Navbar = () => {
         </div>
       </div>
 
+      {/* B] FOR MOBILE VIEW:  */}
+      <div className="hidden md:flex ml-2">
+        {isMenuOpen ? (
+          <Image
+            src={image.cross}
+            objectFit="contain"
+            width={20}
+            height={20}
+            alt="close-menu"
+            onClick={() => setIsMenuOpen(false)}
+            className={theme === 'light' && 'filter invert'}
+          />
+        ) : (
+          <Image
+            src={image.menu}
+            objectFit="contain"
+            width={20}
+            height={20}
+            alt="open-menu"
+            onClick={() => setIsMenuOpen(true)}
+            className={theme === 'light' && 'filter invert'}
+          />
+        )}
+        {
+          isMenuOpen && (
+            <div className="fixed inset-0 top-65 dark:bg-nft-dark bg-white z-10 nav-h flex justify-between flex-col">
+              <div className="flex-1 p-4">
+                <MenuItems active={active} setActive={setActive} isMobile />
+              </div>
+              <div className="flexCenter p-4 border-t dark:border-nft-black-1 border-nft-gray-1">
+                <ButtonGroup setActive={setActive} router={router} />
+              </div>
+            </div>
+          )
+        }
+      </div>
     </nav>
   );
 };
