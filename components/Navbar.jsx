@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Button from './Button';
 import image from '../assets';
 
-// CHILD FUNCTIONAL COMPONENT 1
+// CHILD COMPONENT 1
 const MenuItems = ({ isMobile, active, setActive }) => {
   const goToLink = (idx) => {
     switch (idx) {
@@ -34,7 +34,7 @@ const MenuItems = ({ isMobile, active, setActive }) => {
   );
 };
 
-// CHILD FUNCTIONAL COMPONENT 2
+// CHILD COMPONENT 2
 const ButtonGroup = ({ setActive, router }) => {
   const hasConnected = true;
   return hasConnected ? (
