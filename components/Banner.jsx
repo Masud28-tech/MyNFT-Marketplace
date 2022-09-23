@@ -1,4 +1,3 @@
-import React from 'react';
 
 const Banner = ({ bannerTitle, parentStyles, childStyles }) => (
   <div className={`${parentStyles} relative w-full flex items-center overflow-hidden nft-gradient`}>
