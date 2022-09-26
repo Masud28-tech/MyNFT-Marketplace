@@ -61,7 +61,7 @@ const Navbar = () => {
     <nav className="flexBetween w-full fixed z-10 p-4 flex-row border-b dark:bg-nft-dark bg-white dark:border-bft-black-1 border-nft-grey-1">
 
       {/* LOGO AND BRANDING */}
-      <div className="flex flex-1 flex-row justify-start">
+      <div className="flex flex-1 flex-row justify-start cursor-pointer">
         {/* A] FOR DESKTOP VIEW */}
         <Link href="/">
           <div className="flexCenter md:hidden cursor:pointer" onClick={() => { }}>
@@ -89,7 +89,7 @@ const Navbar = () => {
             id="checkbox"
             onChange={() => setTheme(theme === 'light' ? 'dark' : 'light')}
           />
-          <label htmlFor="checkbox" className="flexBetween w-8 h-4 bg-black rounded-2xl p-1 relative label">
+          <label htmlFor="checkbox" className="flexBetween w-8 h-4 bg-black rounded-2xl p-1 relative label cursor-pointer">
             <i className="fas fa-sun" />
             <i className="fas fa-moon" />
             <div className="ball w-3 h-3 absolute bg-white rounded-full" />
