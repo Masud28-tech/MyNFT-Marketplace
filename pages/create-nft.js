@@ -11,6 +11,7 @@ const CreateNFT = () => {
   const { theme } = useTheme();
   const [fileUrl, setFileUrl] = useState(null);
 
+  // UTILITY FUNCTIONS: IMPLEMENTING DRAG/DROP INPUT FOR NFT-IMAGES
   const onDrop = useCallback(() => {
     // It will upload images to ipfs (i.e. to the blockchain)
   }, []);
@@ -20,6 +21,8 @@ const CreateNFT = () => {
     accept: 'image/*',
     maxSize: 5000000,
   });
+
+  // CUSTOM STYLES FOR DROP/DRAG: WHENEVER VALUES PASSED IN DEPENDENCY CHANGED IT MEMOIZES/RUNS/UPDATES STYLES OF THE SECTION
   const fileStyle = useMemo(() => (
     `dark:bg-nft-black-1 bg-white border dark:barder-white border-nft-gray-2 flex flex-col items-center p-5 rounded-sm border-dashed
     ${isDragActive && 'border-file-active'}
@@ -39,6 +42,7 @@ const CreateNFT = () => {
             Upload File
           </p>
 
+          {/* DROP AND DRAG SECTION */}
           <div className="mt-4">
             <div {...getRootProps()} className={fileStyle}>
               <input {...getInputProps()} />
@@ -67,14 +71,15 @@ const CreateNFT = () => {
               </div>
             </div>
 
-            {fileUrl && (
-              <aside>
-                <div>
-                  <img src={fileUrl} alt="asset_file" />
-                </div>
-              </aside>
-            )}
           </div>
+
+          {fileUrl && (
+            <aside>
+              <div>
+                <img src={fileUrl} alt="asset_file" />
+              </div>
+            </aside>
+          )}
         </div>
       </div>
     </div>
