@@ -4,12 +4,13 @@ import Image from 'next/image';
 import { useDropzone } from 'react-dropzone';
 import { useTheme } from 'next-themes';
 
-import { Button } from '../components';
+import { Button, Input } from '../components';
 import images from '../assets';
 
 const CreateNFT = () => {
   const { theme } = useTheme();
   const [fileUrl, setFileUrl] = useState(null);
+  const [formInput, setFormInput] = useState({ name: '', description: '', price: '' });
 
   // UTILITY FUNCTIONS: IMPLEMENTING DRAG/DROP INPUT FOR NFT-IMAGES
   const onDrop = useCallback(() => {
@@ -30,6 +31,8 @@ const CreateNFT = () => {
     ${isDragReject && 'border-file-reject'}
     `
   ), [isDragAccept, isDragActive, isDragReject]);
+
+  console.log(formInput);
 
   return (
     <div className="flex justify-center sm:px-4 p-12">
@@ -81,6 +84,34 @@ const CreateNFT = () => {
             </aside>
           )}
         </div>
+
+        <Input
+          inputType="input"
+          title="Name"
+          placeholder="Enter NFT Name"
+          handleChange={(e) => setFormInput({ ...formInput, name: e.target.value })}
+        />
+        <Input
+          inputType="textarea"
+          title="Description"
+          placeholder="NFT Description"
+          handleChange={(e) => setFormInput({ ...formInput, description: e.target.value })}
+        />
+        <Input
+          inputType="number"
+          title="Price"
+          placeholder="NFT Price"
+          handleChange={(e) => setFormInput({ ...formInput, price: e.target.value })}
+        />
+
+        <div className="w-full mt-7 flex justify-end">
+          <Button
+            btnName="Create NFT"
+            customStyles="rounded"
+            onClick={() => {}}
+          />
+        </div>
+
       </div>
     </div>
   );
