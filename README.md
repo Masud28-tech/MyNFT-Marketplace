@@ -1,9 +1,9 @@
 # MyNFT Marketplace
 
-A Web3 Application build with NextJs, Tailwind CSS, and Blockchain development technologies such as Solidity, hardhat, IPFS and Infura.
+A **Web3 Application** build with NextJs, Tailwind CSS, and Blockchain development technologies such as Solidity, hardhat, IPFS and Infura.
 MyNFT Marketplace is a NFT Market app where one can create their NFT Cards by uploading on IPFS, Sale and buy NFTs. 
 
-Features:
+**Features:**
 1. Amezing and Responsive UI build with Tailwind CSS and nextjs.
 1. Metamask connectivity using hardhat and IPFS tools.
 1. File Upload with drag and drop methode build using ReactJs useDropzone hook.
