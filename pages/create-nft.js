@@ -20,8 +20,6 @@ const CreateNFT = () => {
     // It will upload images to ipfs (i.e. to the blockchain)
     const url = await uploadToIPFS(acceptedFile[0]);
 
-    console.log({ url });
-
     setFileUrl(url);
   }, []);
 

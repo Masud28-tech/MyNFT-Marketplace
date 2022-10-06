@@ -1,15 +1,27 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useContext } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 
 import { Banner, CreatorCard, NFTCard } from '../components';
+import { NFTContext } from '../context/NFTContext';
 import images from '../assets';
 
 const Home = () => {
   const { theme } = useTheme();
   const parentRef = useRef(null);
   const scrollRef = useRef(null);
+  const { fetchNFTs } = useContext(NFTContext);
+
   const [showScrollBtns, setShowScrollBtns] = useState(false);
+  const [nfts, setNfts] = useState([]);
+
+  // USE-EFFECT: FOR FETCHING ALL THE NFTs ON LOAD
+  useEffect(() => {
+    fetchNFTs()
+      .then((items) => {
+        setNfts(items);
+      });
+  }, []);
 
   // UTILITY FUNCTIONS FOR: BEST-CREATOR SCROLLCARDS
   const handleScroll = (direction) => {
@@ -36,7 +48,6 @@ const Home = () => {
 
   useEffect(() => {
     isScrollable();
-
     window.addEventListener('resize', isScrollable);
     return () => window.removeEventListener('resize', isScrollable);
   }, []);
@@ -106,7 +117,10 @@ const Home = () => {
             </div>
           </div>
           <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+            {
+                nfts.map((nft) => <NFTCard key={nft.tokenId} nft={nft} />)
+            }
+            {[1, 2, 3].map((i) => (
               <NFTCard
                 key={`nft-${i}`}
                 nft={{

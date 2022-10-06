@@ -41,7 +41,6 @@ export const NFTProvider = ({ children }) => {
     } else {
       console.log('No Account found.');
     }
-    console.log({ accounts });
   };
 
   useEffect(() => {
@@ -85,7 +84,7 @@ export const NFTProvider = ({ children }) => {
 
       const url = `https://mynftmarketplace.infura-ipfs.io/ipfs/${added.path}`;
 
-      createSale(url, price);
+      await createSale(url, price);
 
       router.push('/');
     } catch (error) {
@@ -101,8 +100,7 @@ export const NFTProvider = ({ children }) => {
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
 
-    // CONVERTION: PRICE FROM (0.025 i.e HUMAN READABLE FORM) TO (25000000000 i.e. WHAT ACTUALLY BLOKCHAIN CONTRACT ACCEPTS)
-    const price = ethers.utils.parseUnits(formInputPrice, 'ether');
+    const price = ethers.utils.parseUnits(formInputPrice, 'ether'); // CONVERTION: PRICE FROM (0.025 i.e HUMAN READABLE FORM) TO (25000000000 i.e. WHAT ACTUALLY BLOKCHAIN CONTRACT ACCEPTS)
 
     const contract = fetchContract(signer);
 
@@ -113,8 +111,39 @@ export const NFTProvider = ({ children }) => {
     transaction.wait();
   };
 
+  // FUNCTION 6: FOR FETCHING ALL THE NFTs CREATED USING 'fetchMarketItems' SMART CONTRACT
+  const fetchNFTs = async () => {
+    const provider = new ethers.providers.JsonRpcProvider();
+    const contract = fetchContract(provider);
+
+    // FETCHING ALL THE NFTS DATA
+    const data = await contract.fetchMarketItems();
+
+    // STORING DATA IN ITEMS ARRAY IN PROPER FORMAT
+    const items = await Promise.all(data.map(async ({ tokenId, seller, owner, price: unformattedPrice }) => {
+      const tokenURI = await contract.tokenURI(tokenId);
+
+      const { data: { image, name, description } } = await axios.get(tokenURI);
+
+      const price = ethers.utils.formatUnits(unformattedPrice.toString(), 'ether'); // CONVERTION: PRICE FROM (25000000000 A HEXADECIMAL BIG INTEGER i.e. WHAT ACTUALLY BLOKCHAIN CONTRACT STORE) TO (0.025 i.e HUMAN READABLE FORM)
+
+      return {
+        tokenURI,
+        image,
+        name,
+        description,
+        price,
+        seller,
+        owner,
+        tokenId: tokenId.toNumber(),
+      };
+    }));
+
+    return items;
+  };
+
   return (
-    <NFTContext.Provider value={{ nftCurrency, currentAccount, connectToWallet, uploadToIPFS, createNFT }}>
+    <NFTContext.Provider value={{ nftCurrency, currentAccount, connectToWallet, uploadToIPFS, createNFT, fetchNFTs }}>
       {children}
     </NFTContext.Provider>
   );
