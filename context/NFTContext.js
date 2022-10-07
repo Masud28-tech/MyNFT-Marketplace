@@ -142,8 +142,45 @@ export const NFTProvider = ({ children }) => {
     return items;
   };
 
+  // FUNCTION 7: FETCH LISTED NFTs OR MY-NFTs BASED ON PASSED TYPE
+  const fetchListedNFTsOrMyNFTs = async (type) => {
+    // ESTABLISHING CONNECTIONS REQUIRED FOR CONTRACT FETCHING
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+
+    const contract = fetchContract(signer);
+
+    const data = type === 'fetchItemsListed'
+      ? await contract.fetchNFTsListed()
+      : await contract.fetchMyNFTs();
+
+    // STORING DATA IN ITEMS ARRAY FROM DATA BY CONVERTING IT INTO PROPER FORMAT
+    const items = await Promise.all(data.map(async ({ tokenId, seller, owner, price: unformattedPrice }) => {
+      const tokenURI = await contract.tokenURI(tokenId);
+
+      const { data: { image, name, description } } = await axios.get(tokenURI);
+
+      const price = ethers.utils.formatUnits(unformattedPrice.toString(), 'ether'); // CONVERTION: PRICE FROM (25000000000 A HEXADECIMAL BIG INTEGER i.e. WHAT ACTUALLY BLOKCHAIN CONTRACT STORE) TO (0.025 i.e HUMAN READABLE FORM)
+
+      return {
+        tokenURI,
+        image,
+        name,
+        description,
+        price,
+        seller,
+        owner,
+        tokenId: tokenId.toNumber(),
+      };
+    }));
+
+    return items;
+  };
+
   return (
-    <NFTContext.Provider value={{ nftCurrency, currentAccount, connectToWallet, uploadToIPFS, createNFT, fetchNFTs }}>
+    <NFTContext.Provider value={{ nftCurrency, currentAccount, connectToWallet, uploadToIPFS, createNFT, fetchNFTs, fetchListedNFTsOrMyNFTs }}>
       {children}
     </NFTContext.Provider>
   );
