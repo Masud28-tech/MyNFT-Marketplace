@@ -24,3 +24,16 @@ MyNFT Marketplace is a NFT Market app where one can create their NFT Cards by up
 
 ![image](https://user-images.githubusercontent.com/65458743/194046005-743a6ac6-78c6-4948-96b5-8d02c3ae8c87.png)
 
+----
+
+
+## To Run the blockchain appllication i.e. dApp:
+
+1st deploy contract: **npx hardhat run scripts/deploy.js --network localhost**
+
+2nd Run contract/app: **npx hardhat node**
+
+
+## To Run frontend of application:
+
+use command: **npx run dev**
