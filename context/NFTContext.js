@@ -179,8 +179,25 @@ export const NFTProvider = ({ children }) => {
     return items;
   };
 
+  // FUNCTION 8: BUY LISTED NFT
+  const buyNFT = async (nft) => {
+    // ESTABLISHING CONNECTIONS REQUIRED FOR CONTRACT FETCHING
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+
+    const contract = fetchContract(signer);
+
+    const price = ethers.utils.parseUnits(nft.price.toString(), 'ether'); // CONVERTION: PRICE FROM (0.025 i.e HUMAN READABLE FORM) TO (25000000000 i.e. WHAT ACTUALLY BLOKCHAIN CONTRACT ACCEPTS)
+
+    const transaction = await contract.createMarketSale(nft.tokenId, { value: price });
+
+    transaction.wait();
+  };
+
   return (
-    <NFTContext.Provider value={{ nftCurrency, currentAccount, connectToWallet, uploadToIPFS, createNFT, fetchNFTs, fetchListedNFTsOrMyNFTs }}>
+    <NFTContext.Provider value={{ nftCurrency, currentAccount, connectToWallet, uploadToIPFS, createNFT, fetchNFTs, fetchListedNFTsOrMyNFTs, buyNFT }}>
       {children}
     </NFTContext.Provider>
   );

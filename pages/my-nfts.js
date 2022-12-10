@@ -12,6 +12,16 @@ const MyNFTs = () => {
 
   const { fetchListedNFTsOrMyNFTs, currentAccount } = useContext(NFTContext);
 
+  // USE-EFFECT: FOR FETCHING My NFTs ON LOAD
+  useEffect(() => {
+    fetchListedNFTsOrMyNFTs()
+      .then((items) => {
+        setNfts(items);
+        console.log({ items });
+        setIsLoading(false);
+      });
+  }, []);
+
   if (isLoading) {
     return (
       <div className="flexStart min-h-screen">
@@ -53,7 +63,7 @@ const MyNFTs = () => {
       ) : (
         <div className="p-12 sm:px-4 w-full minmd:w-4/5 flexCenter flexCol">
           <div className="flex-1 w-full flex flex-row sm:flex-col px-4 xs:px-0 minlg:px-8">
-            Search Bar
+            {/* Search Bar */}
           </div>
           <div className="flex flex-wrap mt-3 w-full">
             {nfts.map((nft) => <NFTCard key={nft.tokenId} nft={nft} />)}

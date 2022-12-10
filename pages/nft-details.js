@@ -54,9 +54,12 @@ const PaymentBodyComp = ({ nft, nftCurrency }) => (
 
 const NFTDetails = () => {
   const router = useRouter();
-  const { currentAccount, nftCurrency } = useContext(NFTContext);
+  const { currentAccount, nftCurrency, buyNFT } = useContext(NFTContext);
+
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+
   const [nft, setNft] = useState({ image: '', tokenId: '', name: '', description: '', owner: '', price: '', seller: '' });
 
   useEffect(() => {
@@ -65,6 +68,13 @@ const NFTDetails = () => {
     setNft(router.query);
     setIsLoading(false);
   }, [router.isReady]);
+
+  const checkoutNFTBuy = async () => {
+    await buyNFT(nft);
+
+    setIsModalOpen(false);
+    setIsSuccessModalOpen(true);
+  };
 
   if (isLoading) return <Loader />;
 
@@ -146,7 +156,7 @@ const NFTDetails = () => {
               <Button
                 btnName="Check out"
                 customStyles="rounded-xl mr-5 sm:mb-5 sm:mr-0"
-                handleClick={() => { }}
+                handleClick={checkoutNFTBuy}
               />
 
               <Button
@@ -161,6 +171,32 @@ const NFTDetails = () => {
         )
       }
 
+      {
+        isSuccessModalOpen
+        && (
+          <Modal
+            header="Payment Successfull"
+            body={(
+              <div className="flexCenter flex-col text-center">
+                <div className="relative w-52 h-52">
+                  <Image src={nft.image || images[`${nft.i}`]} objectFit="cover" layout="fill" />
+                </div>
+                <p className="font-poppins dark:text-white text-nft-black-1 font-normal text-sm minlg:text-xl mt-10">
+                  You successfully purchased <span> {nft.name} </span> from <span> {trimAddress(nft.seller)}</span>
+                </p>
+              </div>
+            )}
+            footer={(
+              <Button
+                btnName="Check it out"
+                customStyles="rounded-xl sm:mb-5"
+                handleClick={() => { router.push('/my-nfts'); }}
+              />
+            )}
+            handleClose={() => setIsSuccessModalOpen(false)}
+          />
+        )
+      }
     </div>
   );
 };
