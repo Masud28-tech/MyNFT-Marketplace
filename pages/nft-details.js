@@ -60,7 +60,7 @@ const NFTDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
-  const [nft, setNft] = useState({ image: '', tokenId: '', name: '', description: '', owner: '', price: '', seller: '' });
+  const [nft, setNft] = useState({ image: '', tokenId: '', tokenURI: '', name: '', description: '', owner: '', price: '', seller: '' });
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -135,13 +135,21 @@ const NFTDetails = () => {
                   You cannot buy your own NFT
                 </p>
               )
-              : (
-                <Button
-                  btnName={`Buy for ${nft.price} ${nftCurrency}`}
-                  customStyles="mr-5 sm:mr-0 rounded-xl"
-                  handleClick={() => setIsModalOpen(true)}
-                />
-              )
+              : currentAccount === nft.owner.toLowerCase()
+                ? (
+                  <Button
+                    btnName="List on Marketplace"
+                    customStyles="mr-5 sm:mr-0 sm:mb-5 rounded-xl"
+                    handleClick={() => router.push(`/resell-nft?tokenId=${nft.tokenId}&tokenURI=${nft.tokenURI}`)}
+                  />
+                )
+                : (
+                  <Button
+                    btnName={`Buy for ${nft.price} ${nftCurrency}`}
+                    customStyles="mr-5 sm:mr-0 sm:mb-5 rounded-xl"
+                    handleClick={() => setIsModalOpen(true)}
+                  />
+                )
           }
         </div>
       </div>
