@@ -6,6 +6,9 @@ import { Banner, CreatorCard, NFTCard } from '../components';
 import { NFTContext } from '../context/NFTContext';
 import images from '../assets';
 
+import { getTopCreators } from '../utils/getTopCreators';
+import { trimAddress } from '../utils/trimAddress';
+
 const Home = () => {
   const { theme } = useTheme();
   const parentRef = useRef(null);
@@ -14,6 +17,9 @@ const Home = () => {
 
   const [showScrollBtns, setShowScrollBtns] = useState(false);
   const [nfts, setNfts] = useState([]);
+
+  // GET TOP CREATORS USING UITILITY FUNCTION
+  const topCreators = getTopCreators(nfts);
 
   // USE-EFFECT: FOR FETCHING ALL THE NFTs ON LOAD
   useEffect(() => {
@@ -71,7 +77,19 @@ const Home = () => {
           </h1>
           <div className="relative flex-1 max-w-full flex mt-3" ref={parentRef}>
             <div className="flex flex-row w-max overflow-x-scroll no-scrollbar select-none" ref={scrollRef}>
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => (
+              {/* REAL TOP CREATORS */}
+              {topCreators && topCreators.map((creator, idx) => (
+                <CreatorCard
+                  key={creator.seller}
+                  rank={idx + 1}
+                  creatorImage={images[`creator${idx + 1}`]}
+                  creatorName={trimAddress(creator.seller)}
+                  creatorEths={creator.priceSum}
+                />
+              ))}
+
+              {/* DUMMY TOP CREATORS */}
+              {[1, 2, 3, 4, 5].map((i) => (
                 <CreatorCard
                   key={`creator-${i}`}
                   rank={i}
