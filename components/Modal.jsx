@@ -6,7 +6,7 @@ import images from '../assets';
 
 const Modal = ({ header, body, footer, handleClose }) => {
   const modalRef = useRef(null);
-  const theme = useTheme();
+  const { theme } = useTheme();
 
   const handleOutSideClick = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
