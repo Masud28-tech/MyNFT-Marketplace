@@ -2,7 +2,7 @@ import { useRef, useState, useEffect, useContext } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 
-import { Banner, CreatorCard, NFTCard } from '../components';
+import { Banner, CreatorCard, NFTCard, SearchBar } from '../components';
 import { NFTContext } from '../context/NFTContext';
 import images from '../assets';
 
@@ -15,17 +15,21 @@ const Home = () => {
   const scrollRef = useRef(null);
   const { fetchNFTs } = useContext(NFTContext);
 
-  const [showScrollBtns, setShowScrollBtns] = useState(false);
   const [nfts, setNfts] = useState([]);
+  const [showScrollBtns, setShowScrollBtns] = useState(false);
+  // FOR SEARCHBAR
+  const [copyNfts, setCopyNfts] = useState([]);
+  const [activeSelected, setActiveSelected] = useState('Recently added');
 
   // GET TOP CREATORS USING UITILITY FUNCTION
-  const topCreators = getTopCreators(nfts);
+  const topCreators = getTopCreators(copyNfts);
 
   // USE-EFFECT: FOR FETCHING ALL THE NFTs ON LOAD
   useEffect(() => {
     fetchNFTs()
       .then((items) => {
         setNfts(items);
+        setCopyNfts(items);
       });
   }, []);
 
@@ -58,6 +62,42 @@ const Home = () => {
     return () => window.removeEventListener('resize', isScrollable);
   }, []);
   // END:UTILITY FUNCTIONS FOR: BEST-CREATOR SCROLLCARDS
+
+  // START: UTILITY FUNCTIONS FOR SEARCHBAR
+  useEffect(() => {
+    const sortedNfts = [...nfts];
+
+    switch (activeSelected) {
+      case 'Price (low to high)':
+        setNfts(sortedNfts.sort((a, b) => a.price - b.price));
+        break;
+      case 'Price (high to low)':
+        setNfts(sortedNfts.sort((a, b) => b.price - a.price));
+        break;
+      case 'Recently added':
+        setNfts(sortedNfts.sort((a, b) => b.tokenId - a.tokenId));
+        break;
+      default:
+        setNfts(nfts);
+        break;
+    }
+  }, [activeSelected]);
+
+  const onHandleSearch = (search) => {
+    const filteredNFTs = nfts.filter(({ name }) => name.toLowerCase().includes(search.toLowerCase()));
+
+    if (filteredNFTs.length) {
+      setNfts(filteredNFTs);
+    } else {
+      setNfts(copyNfts);
+    }
+  };
+
+  const onClearSearch = () => {
+    if (nfts.length && copyNfts.length) setNfts(copyNfts);
+  };
+
+  // END: UTILITY FUNCTIONS FOR SEARCHBAR
 
   return (
     <div className="flex justify-center sm:px-4 p-12">
@@ -125,14 +165,16 @@ const Home = () => {
         </div>
 
         {/* TOP NFTs FOR SELL (NFTs CARDS GRID) */}
-        <div className="mt-10">
+        <div className="mt-12">
           <div className="flexBetween mx-4 xs:mx-0 minlg:mx-8 sm:flex-col sm:items-start">
             <h1 className="flex-1 before:first:font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold sm:mb-4 ">
               Top NFTs
             </h1>
-            <div>
-              Search Bar
+
+            <div className="flex-2 flex flex-row sm:w-full sm:flex-col ">
+              <SearchBar setActiveSelect={setActiveSelected} handleSearch={onHandleSearch} clearSearch={onClearSearch} />
             </div>
+
           </div>
           <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
             {
